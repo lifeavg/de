@@ -33,3 +33,32 @@ SQL_INSERT_STUDENT = """
 insert into dormitory.public.students (id, birthday, sex, name, room)
 values(%(id)s, %(birthday)s, %(sex)s, %(name)s, %(room)s)
 """
+
+SQL_ROOMS_STUD_NUM = """
+select room, count(*) students_number
+from dormitory.public.students
+group by room
+"""
+
+SQL_AVG_YOUNGEST_ROOMS = """
+select room
+from dormitory.public.students
+group by room
+order by avg(age(current_date, birthday))
+limit 5
+"""
+
+SQL_BIGGEST_AGE_DIFF = """
+select room
+from dormitory.public.students
+group by room
+order by max(age(current_date, birthday)) - min(age(current_date, birthday)) desc
+limit 5
+"""
+
+SQL_ROOMS_DIFF_SEX = """
+select room
+from dormitory.public.students
+group by room
+having count(distinct sex) > 1
+"""
