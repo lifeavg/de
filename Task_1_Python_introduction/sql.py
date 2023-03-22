@@ -23,3 +23,13 @@ create table if not exists students (
     foreign key (room) references rooms (id)
 )
 """
+
+SQL_INSERT_ROOM = """
+insert into rooms (id, name)
+values(%(id)s, %(name)s)
+"""
+
+SQL_INSERT_STUDENT = """
+insert into dormitory.public.students (id, birthday, sex, name, room)
+values(%(id)s, %(birthday)s, %(sex)s, %(name)s, %(room)s)
+"""
