@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from util import object_attrs
+
 
 class Config:
     def __init__(self, file: Path) -> None:
@@ -31,3 +33,6 @@ class Config:
                 f"@{self.host}:{self.port}/{self.db_name}"
             )
         return ""
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({', '.join(object_attrs(self))})"
