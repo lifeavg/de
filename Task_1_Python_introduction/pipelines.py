@@ -15,8 +15,12 @@ class JSONPipe(ABC):
         self.insert_query: LiteralString = insert_query
 
     def extract(self, raw_file: Path) -> list[dict[str, Any]]:
-        with open(raw_file, "rb") as file:
-            return json.load(file)
+        try:
+            with open(raw_file, "rb") as file:
+                return json.load(file)
+        except (FileNotFoundError, PermissionError) as error:
+            print(raw_file, error.args[1])
+        return []
 
     @abstractmethod
     def is_valid(self, item: dict[str, Any]) -> tuple[bool, Reason]:
@@ -52,6 +56,7 @@ class JSONPipe(ABC):
                     pg.errors.UniqueViolation,
                     pg.errors.NumericValueOutOfRange,
                     pg.errors.ForeignKeyViolation,
+                    pg.errors.ProgrammingError,
                 ) as error:
                     print(item, error.args[0])
 

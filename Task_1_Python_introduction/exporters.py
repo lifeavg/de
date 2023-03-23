@@ -14,5 +14,8 @@ def to_xml(data: list[dict[str, Any]]) -> str:
 
 
 def write(data: str, out_file: Path) -> None:
-    with open(out_file, "w", encoding="utf-8") as file:
-        file.write(data)
+    try:
+        with open(out_file, "w", encoding="utf-8") as file:
+            file.write(data)
+    except PermissionError as error:
+        print(out_file, error.args[1])
