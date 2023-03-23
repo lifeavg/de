@@ -1,5 +1,8 @@
+from typing import Any, LiteralString
+
 import psycopg as pg
 import sql
+from psycopg.rows import dict_row
 from psycopg.sql import SQL, Identifier
 
 
@@ -25,3 +28,10 @@ class DBInit:
         if not self._check_type_exists("sex_t"):
             self._create_type("sex_t")
         self._create_tables()
+
+
+def db_query(connection: pg.Connection, query: LiteralString) -> list[dict[str, Any]]:
+    with connection.cursor(row_factory=dict_row) as cursor:
+        cursor.execute(query)
+        connection.rollback()
+        return cursor.fetchall()
