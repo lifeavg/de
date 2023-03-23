@@ -1,0 +1,37 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0  # Use the ref you want to point at
+    hooks:
+      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: name-tests-test
+
+- repo: local
+
+  hooks:
+    - id: black
+      name: black
+      entry: black
+      language: system
+      types: [python]
+      args: [--line-length=200, --target-version=py311]
+
+    - id: pylint
+      name: pylint
+      entry: pylint
+      language: system
+      types: [python]
+      args:
+        [
+          "-rn", # Only display messages
+          "-sn", # Don't display the score
+        ]
+
+    # - id: pytest-check
+    #   name: pytest-check
+    #   entry: pytest
+    #   language: system
+    #   pass_filenames: false
+    #   always_run: true
