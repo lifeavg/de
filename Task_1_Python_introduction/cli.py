@@ -1,4 +1,5 @@
 import argparse
+import sys
 from pathlib import Path
 
 import db
@@ -68,6 +69,9 @@ class Cli:
         )
 
     def run(self, raw_args: list[str] | None = None) -> None:
+        if len(sys.argv) < 2:
+            print("Please, input valid command: extract, report, init")
+            return
         args = self.arguments.parse_args(raw_args)
         match args.command:
             case "extract":
