@@ -94,12 +94,12 @@ class StudentPipe(JSONPipe):
         return True, "ok"
 
     def transform(
-        self, items: Iterable[dict[str, str | int]]
+        self, items: Iterable[dict[str, Any]]
     ) -> Generator[dict[str, str | int | datetime], None, None]:
         for item in items:
             try:
-                item["birthday"] = datetime.fromisoformat(item["birthday"]).date()  # type: ignore
+                item["birthday"] = datetime.fromisoformat(item["birthday"]).date()
             except ValueError as error:
                 print(item, error.args[0])
             else:
-                yield item  # type: ignore
+                yield item
