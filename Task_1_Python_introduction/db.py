@@ -30,6 +30,11 @@ class DBInit:
         logger.info("Successfully created type: %s", typename)
 
     def init(self) -> None:
+        """
+        execute DB initialization.
+        creates requeued types and warns if type_name exists (no overwrite).
+        creates tables assuming SQL script has "if not exists" check
+        """
         typename = "sex_t"
         if not self._check_type_exists(typename):
             self._create_type(typename)

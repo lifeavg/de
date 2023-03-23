@@ -17,6 +17,9 @@ def to_xml(data: list[dict[str, Any]]) -> str:
 
 
 def write(data: str, out_file: Path) -> None:
+    """
+    writes exported data to file. OVERWRITES file if exists
+    """
     try:
         with open(out_file, "w", encoding="utf-8") as file:
             file.write(data)

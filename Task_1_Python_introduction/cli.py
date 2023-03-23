@@ -22,12 +22,14 @@ class Cli:
             "xml": exp.to_xml,
         }
         self._connection = connection
+
+        # root argument parser
         self.arguments = argparse.ArgumentParser(prog="dormitory")
         subparsers = self.arguments.add_subparsers()
-
+        # subparser for database init script
         init = subparsers.add_parser("init")
         init.set_defaults(command="init")
-
+        # subparser for file ETL pipelines
         extract = subparsers.add_parser("extract")
         extract.set_defaults(command="extract")
         extract.add_argument(
@@ -44,7 +46,7 @@ class Cli:
             nargs="?",
             help="JSON file with rooms records",
         )
-
+        # subparser for reporting
         report = subparsers.add_parser("report")
         report.set_defaults(command="report")
         report.add_argument(

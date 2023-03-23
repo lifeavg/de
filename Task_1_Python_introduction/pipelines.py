@@ -13,6 +13,10 @@ Reason = str
 
 
 class JSONPipe(ABC):
+    """
+    Pipeline base class
+    """
+
     def __init__(self, insert_query: LiteralString) -> None:
         super().__init__()
         self.insert_query: LiteralString = insert_query
@@ -29,11 +33,16 @@ class JSONPipe(ABC):
 
     @abstractmethod
     def is_valid(self, item: dict[str, Any]) -> tuple[bool, Reason]:
-        ...
+        """
+        check if loaded item has expected data for further processing
+        """
 
     def filter(
         self, items: Iterable[dict[str, Any]]
     ) -> Generator[dict[str, Any], None, None]:
+        """
+        filer valid extracted raw objects with is_valid method
+        """
         for item in items:
             valid, reason = self.is_valid(item)
             if valid:
@@ -45,7 +54,9 @@ class JSONPipe(ABC):
     def transform(
         self, items: Iterable[dict[str, Any]]
     ) -> Generator[dict[str, Any], None, None]:
-        ...
+        """
+        transform raw objects to required format
+        """
 
     def load(
         self,
@@ -53,6 +64,9 @@ class JSONPipe(ABC):
         insert_query: LiteralString,
         items: Iterable[dict[str, Any]],
     ) -> None:
+        """
+        load objects to DB
+        """
         with connection.cursor() as cursor:
             for item in items:
                 try:
@@ -69,6 +83,9 @@ class JSONPipe(ABC):
                     )
 
     def execute(self, connection: pg.Connection, raw_file: Path) -> None:
+        """
+        main function to execute pipeline: extract -> filter -> transform -> load
+        """
         logger.info("Starting pipeline execution for file %s", raw_file)
         self.load(
             connection,

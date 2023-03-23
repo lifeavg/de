@@ -30,6 +30,9 @@ class Config:
 
     @property
     def connection_address(self) -> str:
+        """
+        return connection string if possible or empty string
+        """
         if self.username and self.password and self.host and self.port and self.db_name:
             return (
                 f"postgresql://{self.username}:{self.password}"

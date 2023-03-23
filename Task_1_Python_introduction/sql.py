@@ -1,3 +1,8 @@
+"""
+SQL queries literals
+"""
+
+
 SQL_ROOMS = """
 create table if not exists rooms (
     id serial primary key,
