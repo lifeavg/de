@@ -9,7 +9,7 @@ import sql
 from psycopg import Connection
 
 
-class Cli:
+class Cli:  # pylint: disable=R0903
     def __init__(self, connection: Connection) -> None:
         self._reports = {
             "SQL_ROOMS_STUD_NUM": sql.SQL_ROOMS_STUD_NUM,
@@ -57,9 +57,7 @@ class Cli:
             choices=tuple(self._reports.keys()),
             help=f"Report to create: {tuple(self._reports.keys())}",
         )
-        report.add_argument(
-            "file", metavar="F", type=Path, nargs=1, help="Output file path"
-        )
+        report.add_argument("file", metavar="F", type=Path, nargs=1, help="Output file path")
         report.add_argument(
             "-format",
             metavar="T",
@@ -78,20 +76,12 @@ class Cli:
         match args.command:
             case "extract":
                 if args.rooms:
-                    ppl.RoomPipe(sql.SQL_INSERT_ROOM).execute(
-                        self._connection, args.rooms
-                    )
+                    ppl.RoomPipe(sql.SQL_INSERT_ROOM).execute(self._connection, args.rooms)
                 if args.students:
-                    ppl.RoomPipe(sql.SQL_INSERT_STUDENT).execute(
-                        self._connection, args.students
-                    )
+                    ppl.RoomPipe(sql.SQL_INSERT_STUDENT).execute(self._connection, args.students)
             case "report":
                 exp.write(
-                    self._exporters[args.format](
-                        db.db_query(
-                            self._connection, self._reports[args.report_type[0]]  # type: ignore
-                        )
-                    ),
+                    self._exporters[args.format](db.db_query(self._connection, self._reports[args.report_type[0]])),  # type: ignore
                     args.file[0],
                 )
             case "init":

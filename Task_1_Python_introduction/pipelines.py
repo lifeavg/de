@@ -37,9 +37,7 @@ class JSONPipe(ABC):
         check if loaded item has expected data for further processing
         """
 
-    def filter(
-        self, items: Iterable[dict[str, Any]]
-    ) -> Generator[dict[str, Any], None, None]:
+    def filter(self, items: Iterable[dict[str, Any]]) -> Generator[dict[str, Any], None, None]:
         """
         filer valid extracted raw objects with is_valid method
         """
@@ -51,9 +49,7 @@ class JSONPipe(ABC):
                 logger.warning("Invalid input %s: %s", reason, item)
 
     @abstractmethod
-    def transform(
-        self, items: Iterable[dict[str, Any]]
-    ) -> Generator[dict[str, Any], None, None]:
+    def transform(self, items: Iterable[dict[str, Any]]) -> Generator[dict[str, Any], None, None]:
         """
         transform raw objects to required format
         """
@@ -78,9 +74,7 @@ class JSONPipe(ABC):
                     pg.errors.ForeignKeyViolation,
                     pg.errors.ProgrammingError,
                 ) as error:
-                    logger.error(
-                        "Error on saving item to DB: %s , %s", item, error.args[0]
-                    )
+                    logger.error("Error on saving item to DB: %s , %s", item, error.args[0])
 
     def execute(self, connection: pg.Connection, raw_file: Path) -> None:
         """
@@ -96,9 +90,7 @@ class JSONPipe(ABC):
 
 
 class RoomPipe(JSONPipe):
-    def transform(
-        self, items: Iterable[dict[str, Any]]
-    ) -> Generator[dict[str, Any], None, None]:
+    def transform(self, items: Iterable[dict[str, Any]]) -> Generator[dict[str, Any], None, None]:
         for item in items:
             yield item
 
@@ -125,9 +117,7 @@ class StudentPipe(JSONPipe):
             return False, "invalid sex"
         return True, "ok"
 
-    def transform(
-        self, items: Iterable[dict[str, Any]]
-    ) -> Generator[dict[str, str | int | datetime], None, None]:
+    def transform(self, items: Iterable[dict[str, Any]]) -> Generator[dict[str, str | int | datetime], None, None]:
         for item in items:
             try:
                 item["birthday"] = datetime.fromisoformat(item["birthday"]).date()

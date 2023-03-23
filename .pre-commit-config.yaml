@@ -27,6 +27,10 @@ repos:
         [
           "-rn", # Only display messages
           "-sn", # Don't display the score
+          "--disable=C0114",
+          "--disable=C0115",
+          "--disable=C0116",
+          "--max-line-length=200"
         ]
 
     # - id: pytest-check

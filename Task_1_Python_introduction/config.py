@@ -34,10 +34,7 @@ class Config:
         return connection string if possible or empty string
         """
         if self.username and self.password and self.host and self.port and self.db_name:
-            return (
-                f"postgresql://{self.username}:{self.password}"
-                f"@{self.host}:{self.port}/{self.db_name}"
-            )
+            return f"postgresql://{self.username}:{self.password}" f"@{self.host}:{self.port}/{self.db_name}"
         return ""
 
     def __repr__(self) -> str:

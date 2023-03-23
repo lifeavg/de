@@ -6,7 +6,7 @@ SQL queries literals
 SQL_ROOMS = """
 create table if not exists rooms (
     id serial primary key,
-    name character(100) not null 
+    name character(100) not null
 )
 """
 

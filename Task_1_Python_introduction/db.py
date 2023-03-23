@@ -9,7 +9,7 @@ from psycopg.sql import SQL, Identifier
 logger = logging.getLogger()
 
 
-class DBInit:
+class DBInit:  # pylint: disable=R0903
     def __init__(self, connection: pg.Connection) -> None:
         self._connection = connection
 

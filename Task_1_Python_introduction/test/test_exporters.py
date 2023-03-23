@@ -8,7 +8,4 @@ def test_to_json():
 
 
 def test_to_xml():
-    assert (
-        to_xml(data)
-        == '<?xml version="1.0" encoding="UTF-8" ?><root><item><a>aa</a><b>1</b></item></root>'
-    )
+    assert to_xml(data) == '<?xml version="1.0" encoding="UTF-8" ?><root><item><a>aa</a><b>1</b></item></root>'
