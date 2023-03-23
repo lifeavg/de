@@ -1,9 +1,12 @@
+import logging
 from typing import Any, LiteralString
 
 import psycopg as pg
 import sql
 from psycopg.rows import dict_row
 from psycopg.sql import SQL, Identifier
+
+logger = logging.getLogger()
 
 
 class DBInit:
@@ -13,6 +16,7 @@ class DBInit:
     def _create_tables(self) -> None:
         with self._connection.cursor() as cursor, self._connection.transaction():
             cursor.execute(sql.SQL_ROOMS).execute(sql.SQL_STUDENTS)
+        logger.info("Successfully created tables")
 
     def _check_type_exists(self, typename: str) -> bool:
         with self._connection.cursor() as cursor:
@@ -23,15 +27,23 @@ class DBInit:
     def _create_type(self, typename: str) -> None:
         with self._connection.cursor() as cursor, self._connection.transaction():
             cursor.execute(SQL(sql.SQL_SEX_TYPE).format(Identifier(typename)))
+        logger.info("Successfully created type: %s", typename)
 
     def init(self) -> None:
-        if not self._check_type_exists("sex_t"):
-            self._create_type("sex_t")
+        typename = "sex_t"
+        if not self._check_type_exists(typename):
+            self._create_type(typename)
+        else:
+            logger.warning("Type %s already exists", typename)
         self._create_tables()
+        logger.info("DB initialized")
 
 
 def db_query(connection: pg.Connection, query: LiteralString) -> list[dict[str, Any]]:
+    logger.info("Running query %s", query)
     with connection.cursor(row_factory=dict_row) as cursor:
         cursor.execute(query)
         connection.rollback()
-        return cursor.fetchall()
+        query_data = cursor.fetchall()
+        logger.info("Query successfully executed %s", query)
+        return query_data

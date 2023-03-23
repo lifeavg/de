@@ -1,10 +1,13 @@
 import json
+import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Generator, Iterable, LiteralString
 
 import psycopg as pg
+
+logger = logging.getLogger()
 
 Reason = str
 
@@ -17,9 +20,11 @@ class JSONPipe(ABC):
     def extract(self, raw_file: Path) -> list[dict[str, Any]]:
         try:
             with open(raw_file, "rb") as file:
-                return json.load(file)
+                raw_json = json.load(file)
+                logger.info("%s, data successfully loaded", raw_file)
+                return raw_json
         except (FileNotFoundError, PermissionError) as error:
-            print(raw_file, error.args[1])
+            logger.error("Unable to read data %s, %s", raw_file, error.args[1])
         return []
 
     @abstractmethod
@@ -27,14 +32,14 @@ class JSONPipe(ABC):
         ...
 
     def filter(
-        self, rooms: Iterable[dict[str, Any]]
+        self, items: Iterable[dict[str, Any]]
     ) -> Generator[dict[str, Any], None, None]:
-        for room in rooms:
-            valid, reason = self.is_valid(room)
+        for item in items:
+            valid, reason = self.is_valid(item)
             if valid:
-                yield room
+                yield item
             else:
-                print(reason)
+                logger.warning("Invalid input %s: %s", reason, item)
 
     @abstractmethod
     def transform(
@@ -52,20 +57,25 @@ class JSONPipe(ABC):
             for item in items:
                 try:
                     cursor.execute(insert_query, item)
+                    logger.info("Item successfully saved to DB: %s", item)
                 except (
                     pg.errors.UniqueViolation,
                     pg.errors.NumericValueOutOfRange,
                     pg.errors.ForeignKeyViolation,
                     pg.errors.ProgrammingError,
                 ) as error:
-                    print(item, error.args[0])
+                    logger.error(
+                        "Error on saving item to DB: %s , %s", item, error.args[0]
+                    )
 
     def execute(self, connection: pg.Connection, raw_file: Path) -> None:
+        logger.info("Starting pipeline execution for file %s", raw_file)
         self.load(
             connection,
             self.insert_query,
             self.transform(self.filter(self.extract(raw_file))),
         )
+        logger.info("Finished pipeline execution for file %s", raw_file)
 
 
 class RoomPipe(JSONPipe):
@@ -104,7 +114,7 @@ class StudentPipe(JSONPipe):
         for item in items:
             try:
                 item["birthday"] = datetime.fromisoformat(item["birthday"]).date()
-            except ValueError as error:
-                print(item, error.args[0])
+            except ValueError:
+                logger.error("Incorrect date format in birthday field: %s", item)
             else:
                 yield item

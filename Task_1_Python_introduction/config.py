@@ -1,7 +1,10 @@
 import json
+import logging
 from pathlib import Path
 
 from util import object_attrs
+
+logger = logging.getLogger()
 
 
 class Config:
@@ -23,7 +26,7 @@ class Config:
                 self.port = raw.get("port")
                 self.db_name = raw.get("db_name")
         except (FileNotFoundError, PermissionError) as error:
-            print(self.file, error.args[1])
+            logger.error("Unable to load config %s, %s", self.file, error.args[1])
 
     @property
     def connection_address(self) -> str:

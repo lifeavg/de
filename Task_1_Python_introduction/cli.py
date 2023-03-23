@@ -23,10 +23,10 @@ class Cli:
         self._connection = connection
         self.arguments = argparse.ArgumentParser(prog="dormitory")
         subparsers = self.arguments.add_subparsers()
-        
+
         init = subparsers.add_parser("init")
         init.set_defaults(command="init")
-        
+
         extract = subparsers.add_parser("extract")
         extract.set_defaults(command="extract")
         extract.add_argument(
@@ -43,7 +43,7 @@ class Cli:
             nargs="?",
             help="JSON file with rooms records",
         )
-        
+
         report = subparsers.add_parser("report")
         report.set_defaults(command="report")
         report.add_argument(

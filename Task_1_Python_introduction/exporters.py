@@ -1,8 +1,11 @@
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
 import dicttoxml
+
+logger = logging.getLogger()
 
 
 def to_json(data: list[dict[str, Any]]) -> str:
@@ -17,5 +20,6 @@ def write(data: str, out_file: Path) -> None:
     try:
         with open(out_file, "w", encoding="utf-8") as file:
             file.write(data)
+        logger.info("Report successfully written to: %s", out_file)
     except PermissionError as error:
-        print(out_file, error.args[1])
+        logger.info("Unable to write report to: %s, %s", out_file, error.args[1])
