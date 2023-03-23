@@ -12,13 +12,16 @@ class Config:
         self.db_name: str | None = None
 
     def load(self) -> None:
-        with open(self.file, "rb") as file:
-            raw = json.load(file)
-            self.username = raw.get("username")
-            self.password = raw.get("password")
-            self.host = raw.get("host")
-            self.port = raw.get("port")
-            self.db_name = raw.get("db_name")
+        try:
+            with open(self.file, "rb") as file:
+                raw = json.load(file)
+                self.username = raw.get("username")
+                self.password = raw.get("password")
+                self.host = raw.get("host")
+                self.port = raw.get("port")
+                self.db_name = raw.get("db_name")
+        except (FileNotFoundError, PermissionError) as error:
+            print(self.file, error.args[1])
 
     @property
     def connection_address(self) -> str:
