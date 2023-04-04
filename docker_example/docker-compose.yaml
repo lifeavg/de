@@ -1,0 +1,9 @@
+services:
+  app:
+    build: ./my_app/ # build image before start the container
+    container_name: dtest
+    command: uvicorn my_app.main:app --port 8005 --host 0.0.0.0 --reload # custom command will replace Dockerfile CMD
+    ports: 
+      - 8005:8005
+    volumes:
+      - ./my_app:/usr/src/app # sync project folder
