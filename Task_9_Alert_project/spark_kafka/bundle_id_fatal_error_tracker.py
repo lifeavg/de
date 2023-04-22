@@ -17,6 +17,7 @@ errorsStream = spark.readStream.schema(schema).csv(
 
 errorsStream = (
     errorsStream.withColumn("date", errorsStream["date"].cast(TimestampType()))
+    .filter(errorsStream["severity"] == "Error")
     .groupBy(
         errorsStream["bundle_id"],
         f.window("date", "1 hour").alias("timeRange"),

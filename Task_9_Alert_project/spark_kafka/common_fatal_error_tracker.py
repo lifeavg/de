@@ -17,6 +17,7 @@ errorsStream = spark.readStream.schema(schema).csv(
 
 errorsStream = (
     errorsStream.withColumn("date", errorsStream["date"].cast(TimestampType()))
+    .filter(errorsStream["severity"] == "Error")
     .groupBy(f.window("date", "1 minute").alias("timeRange"))
     .agg(f.count("error_code").alias("errorCount"))
     .withColumn(
