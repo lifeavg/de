@@ -91,7 +91,7 @@ def processing_loop(consumer: Consumer, config: Config) -> None:
         event = decode_event(json_data)
         if not event:
             continue
-        if event.errorCount >= 10:
+        if event.errorCount > 10:
             send_email(compose_alert_message(event, config), config)
 
 
