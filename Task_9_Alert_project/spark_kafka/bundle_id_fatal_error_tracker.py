@@ -8,7 +8,7 @@ spark = SparkSession.builder.appName("common_fatal_error_tracker").getOrCreate()
 spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
 
 errorsStream = spark.readStream.schema(schema).csv(
-    "/home/lifeavg/Documents/projects/de/Task_9_Alert_project/data",
+    "file:////data",
     header=True,
     multiLine=True,
     escape='"',
@@ -22,7 +22,7 @@ errorsStream = (
         errorsStream["bundle_id"],
         f.window("date", "1 hour").alias("timeRange"),
     )
-    .agg(f.count("error_code").alias("errorCount"))
+    .count()
     .withColumn(
         "value",
         f.to_json(
@@ -30,11 +30,12 @@ errorsStream = (
                 f.lit("bundle_id_fatal_error").alias("type"),
                 f.col("timeRange")["start"].alias("start"),
                 f.col("timeRange")["end"].alias("end"),
-                "errorCount",
+                f.col("count").alias("errorCount"),
             )
         ),
     )
 )
+print(errorsStream)
 
 # fmt: off
 errorsStream.writeStream \

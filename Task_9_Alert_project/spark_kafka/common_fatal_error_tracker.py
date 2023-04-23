@@ -19,7 +19,7 @@ errorsStream = (
     errorsStream.withColumn("date", errorsStream["date"].cast(TimestampType()))
     .filter(errorsStream["severity"] == "Error")
     .groupBy(f.window("date", "1 minute").alias("timeRange"))
-    .agg(f.count("error_code").alias("errorCount"))
+    .count()
     .withColumn(
         "value",
         f.to_json(
@@ -27,7 +27,7 @@ errorsStream = (
                 f.lit("common_fatal_error").alias("type"),
                 f.col("timeRange")["start"].alias("start"),
                 f.col("timeRange")["end"].alias("end"),
-                "errorCount",
+                f.col("count").alias("errorCount"),
             )
         ),
     )
