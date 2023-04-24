@@ -4,7 +4,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import TimestampType
 from schema import schema
 
-spark = SparkSession.builder.appName("common_fatal_error_tracker").getOrCreate()
+spark = SparkSession.builder.appName("bundle_id_fatal_error_tracker").getOrCreate()
 spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
 
 errorsStream = spark.readStream.schema(schema).csv(
