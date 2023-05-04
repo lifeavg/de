@@ -1,0 +1,20 @@
+{
+  "QueueConfigurations": [
+    {
+      "Id": "on-upload-metrics-queue",
+      "QueueArn": "arn:aws:sqs:us-east-1:000000000000:s3-events",
+      "Events": [
+        "s3:ObjectCreated:*"
+      ]
+    }
+  ],
+  "LambdaFunctionConfigurations": [
+    {
+      "Id": "string",
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:000000000000:function:on-upload-metrics",
+      "Events": [
+        "s3:ObjectCreated:*"
+      ]
+    }
+  ]
+}

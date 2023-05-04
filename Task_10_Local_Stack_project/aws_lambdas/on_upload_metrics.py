@@ -14,18 +14,14 @@ def on_upload_metrics(event, context):
     if re.match(regex, key):
         folder_key, file, *_ = key.split("/")
         if file == "_temporary":
-            print("_temporary", bucket, key)
             return
         if file.endswith(".csv"):
-            print("csv copy_object", bucket, key)
             client.copy_object(Bucket=bucket, CopySource="/".join((bucket, key)), Key=folder_key + ".csv")
-            print("csv delete_object", bucket, key)
             client.delete_object(
                 Bucket=bucket,
                 Key=key,
             )
         if file == "_SUCCESS":
-            print("_SUCCESS delete_object", bucket, key)
             client.delete_object(
                 Bucket=bucket,
                 Key=key,
