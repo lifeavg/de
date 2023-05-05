@@ -2,7 +2,7 @@
 aws --endpoint-url=http://localhost:4566 lambda invoke --function-name on-upload-metrics outputfile.txt
 
 # upload a file
-aws --endpoint-url http://localhost:4566 s3api put-object --bucket helsinki-city-bikes --key output  --body data/outputfile.txt
+aws --endpoint-url http://localhost:4566 s3api put-object --bucket helsinki-city-bikes --key helsinki_bikes_2016_5.csv --body ..data/helsinki_bikes_2016_5.csv
 
 # logs
 aws --endpoint-url http://localhost:4566 logs describe-log-groups --query logGroups[*].logGroupName

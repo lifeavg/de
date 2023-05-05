@@ -85,21 +85,26 @@ def normalize_metrics_dataframe(dataframe, year, month):
 def normalize_raw_data_dataframe(dataframe):
     dataframe.columns = normalize_keys(dataframe.columns)
     dataframe["Index"] = dataframe.apply(lambda _: str(uuid4()), axis=1)
-    return dataframe
+    return dataframe.fillna(0)
 
 
 def write_data_to_dynamodb(dataframe, table, batch_size):
     for batch in generate_dynamodb_item_butches(dataframe.iterrows(), batch_size):
-        dynamodb.batch_write_item(
-            RequestItems={
-                table: batch,
-            },
-        )
+        try:
+            dynamodb.batch_write_item(
+                RequestItems={
+                    table: batch,
+                },
+            )
+        except Exception as e:
+            print(batch)
+            print(e)
 
 
 def calculate_daily_averages(raw_data_dataframe):
     raw_data_dataframe["Day"] = raw_data_dataframe["Departure"].str.split(expand=True)[0]
-    return raw_data_dataframe[["Day", "DistanceM", "DurationSec", "AvgSpeedKmH", "AirTemperatureDegC"]].groupby("Day").mean().reset_index()
+    return raw_data_dataframe[["Day", "DistanceM", "DurationSec", "AvgSpeedKmH", "AirTemperatureDegC"]].groupby(
+        "Day").mean().reset_index()
 
 
 def process_data_objects(metrics_object, raw_data_object, year, month):

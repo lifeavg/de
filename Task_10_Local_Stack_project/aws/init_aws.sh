@@ -19,7 +19,8 @@ rm /tmp/on_upload_metrics.zip
 
 echo ---------------- create-queue s3-events
 aws --endpoint-url http://localhost:4566 sqs create-queue \
-    --queue-name s3-events
+    --queue-name s3-events \
+    --attributes file://queue_config.json
 aws --endpoint-url http://localhost:4566 sqs add-permission \
     --queue-url http://localhost:4566/000000000000/s3-events \
     --label SendMessagesFromS3Events \

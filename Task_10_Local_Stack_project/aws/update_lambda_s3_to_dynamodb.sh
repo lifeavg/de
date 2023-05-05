@@ -20,7 +20,9 @@ zip -q -r s3_to_dynamodb.zip *
 cd $OLDPWD
 aws --endpoint-url=http://localhost:4566 lambda update-function-code \
     --function-name s3-to-dynamodb \
-    --zip-file fileb:///tmp/test_project/s3_to_dynamodb.zip
+    --zip-file fileb:///tmp/test_project/s3_to_dynamodb.zip \
+    --timeout 900 \
+    --memory-size 3072 \
 rm -r /tmp/test_project
 #rm /tmp/test_project/s3_to_dynamodb.zip
 #rm /tmp/test_project/s3_to_dynamodb.py
