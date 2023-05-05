@@ -95,6 +95,8 @@ aws --endpoint-url=http://localhost:4566 lambda create-function \
     --function-name s3-to-dynamodb \
     --handler s3_to_dynamodb.s3_to_dynamodb \
     --runtime python3.9 --role arn:aws:iam::000000000000:role/lambda-sqs-role \
+    --timeout 900 \
+    --memory-size 3072 \
     --zip-file fileb:///tmp/test_project/s3_to_dynamodb.zip
 rm -r /tmp/test_project
 
